@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "JXevecf3w7E=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\thefl\\OneDrive\\Documentos\\GitHub\\InmobileApi\\InmobileApi.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\thefl\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.8\\microsoft.aspnetcore.openapi.9.0.8.nupkg.sha512",
+    "C:\\Users\\thefl\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
