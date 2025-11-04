@@ -1,71 +1,104 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using InmobileApi.Data;
 using InmobileApi.Models;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace InmobileApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Authorize]
     [ApiController]
+    [Route("api/[controller]")]
     public class PropietariosController : ControllerBase
     {
         private readonly DataContext _context;
-        private readonly IConfiguration _config;
 
-        public PropietariosController(DataContext context, IConfiguration config)
+        public PropietariosController(DataContext context)
         {
             _context = context;
-            _config = config;
         }
 
-        // POST api/propietarios/login
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> Login([FromForm] LoginView loginView)
+        // ✅ GET /api/Propietarios (perfil del propietario autenticado)
+        [HttpGet]
+        public async Task<ActionResult<Propietario>> GetPerfil()
         {
             try
             {
-                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: loginView.Clave,
-                    salt: Encoding.ASCII.GetBytes(_config["Salt"] ?? ""),
-                    prf: KeyDerivationPrf.HMACSHA1,
-                    iterationCount: 1000,
-                    numBytesRequested: 256 / 8));
+                var email = User.FindFirstValue(ClaimTypes.Name);
+                var propietario = await _context.Propietarios.FirstOrDefaultAsync(p => p.Email == email);
 
-                var propietario = await _context.Propietarios.FirstOrDefaultAsync(x => x.Email == loginView.Usuario);
+                if (propietario == null)
+                    return NotFound("Propietario no encontrado");
 
-                if (propietario == null || propietario.Clave != hashed)
-                {
-                    return BadRequest("Usuario o clave incorrecta");
-                }
+                return Ok(propietario);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
 
-                var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["TokenAuthentication:SecretKey"]));
-                var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        // ✅ GET /api/Propietarios/{id} (solo para probar o debug)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Propietario>> GetById(int id)
+        {
+            var propietario = await _context.Propietarios.FindAsync(id);
 
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, propietario.Email),
-                    new Claim("FullName", propietario.Nombre + " " + propietario.Apellido),
-                    new Claim(ClaimTypes.Role, "Propietario")
-                };
+            if (propietario == null)
+                return NotFound("No se encontró el propietario");
 
-                var token = new JwtSecurityToken(
-                    issuer: _config["TokenAuthentication:Issuer"],
-                    audience: _config["TokenAuthentication:Audience"],
-                    claims: claims,
-                    expires: DateTime.Now.AddHours(1),
-                    signingCredentials: creds
-                );
+            return Ok(propietario);
+        }
 
-                return Ok(new JwtSecurityTokenHandler().WriteToken(token));
+        // ✅ PUT /api/Propietarios/actualizar
+        [Authorize]
+        [HttpPut("actualizar")]
+        public async Task<ActionResult> Actualizar([FromBody] PropietarioUpdateDto datos)
+        {
+            try
+            {
+                var email = User.FindFirstValue(ClaimTypes.Name);
+                var propietario = await _context.Propietarios.FirstOrDefaultAsync(p => p.Email == email);
+
+                if (propietario == null)
+                    return NotFound("Propietario no encontrado");
+
+                propietario.Nombre = datos.Nombre;
+                propietario.Apellido = datos.Apellido;
+                propietario.Dni = datos.Dni;
+                propietario.Telefono = datos.Telefono;
+                propietario.Email = datos.Email;
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new { message = "Perfil actualizado correctamente" });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // ✅ PUT /api/Propietarios/cambiarClave
+        [HttpPut("cambiarClave")]
+        public async Task<ActionResult> CambiarClave([FromForm] string claveActual, [FromForm] string nuevaClave)
+        {
+            try
+            {
+                var email = User.FindFirstValue(ClaimTypes.Name);
+                var propietario = await _context.Propietarios.FirstOrDefaultAsync(p => p.Email == email);
+
+                if (propietario == null)
+                    return NotFound("Propietario no encontrado");
+
+                if (!BCrypt.Net.BCrypt.Verify(claveActual, propietario.Clave))
+                    return BadRequest("La contraseña actual es incorrecta.");
+
+                propietario.Clave = BCrypt.Net.BCrypt.HashPassword(nuevaClave);
+                await _context.SaveChangesAsync();
+
+                return Ok("Contraseña actualizada correctamente.");
             }
             catch (Exception ex)
             {

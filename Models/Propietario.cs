@@ -29,7 +29,7 @@ namespace InmobileApi.Models
 		public string Email { get; set; } = "";
 
 		[Required(ErrorMessage = "La clave es obligatoria"), DataType(DataType.Password)]
-		public string Clave { get; set; } = "";
+		public string? Clave { get; set; } = "";
 
 		// Relación 1:N con Inmuebles
 		public List<Inmueble>? Inmuebles { get; set; }
