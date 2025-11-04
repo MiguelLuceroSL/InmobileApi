@@ -161,4 +161,27 @@ public class InmueblesController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
+
+    // /api/Inmuebles/{id}
+    [Authorize]
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Inmueble>> GetInmueblePorId(int id)
+    {
+        try
+        {
+            var idProp = int.Parse(User.Claims.First(c => c.Type == "id").Value);
+
+            var inmueble = await _context.Inmuebles
+                .FirstOrDefaultAsync(i => i.IdInmueble == id && i.PropietarioId == idProp);
+
+            if (inmueble == null)
+                return NotFound("No se encontró el inmueble o no pertenece al propietario.");
+
+            return Ok(inmueble);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
 }
