@@ -28,7 +28,7 @@ namespace InmobileApi.Controllers
             _config = config;
         }
 
-        // 🧾 POST /api/Auth/signup
+        // /api/Auth/signup
         [HttpPost("signup")]
         [AllowAnonymous]
         public async Task<IActionResult> Signup([FromForm] Propietario model)
@@ -42,7 +42,7 @@ namespace InmobileApi.Controllers
                 if (existe)
                     return BadRequest("Ya existe un propietario con ese email");
 
-                // ✅ Hash de la clave con BCrypt
+                //hash de la clave con BCrypt
                 model.Clave = BCrypt.Net.BCrypt.HashPassword(model.Clave);
 
                 await _context.Propietarios.AddAsync(model);
@@ -62,7 +62,7 @@ namespace InmobileApi.Controllers
             }
         }
 
-        // 🔐 POST /api/Auth/login
+        // /api/Auth/login
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromForm] LoginView loginView)
@@ -75,13 +75,13 @@ namespace InmobileApi.Controllers
                 if (propietario == null)
                     return BadRequest("Usuario o contraseña incorrectos");
 
-                // Verificar con BCrypt
+                //verificar con BCrypt
                 bool passwordOk = BCrypt.Net.BCrypt.Verify(loginView.Clave, propietario.Clave);
 
                 if (!passwordOk)
                     return BadRequest("Usuario o contraseña incorrectos");
 
-                // Generar token
+                //generar token
                 var secretKey = _config["TokenAuthentication:SecretKey"];
                 var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(secretKey));
                 var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

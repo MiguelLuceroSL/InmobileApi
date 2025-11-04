@@ -33,7 +33,7 @@ namespace InmobileApi.Models
 		public double Valor { get; set; }
 
 		[Display(Name = "Imagen")]
-		public string? ImagenRuta { get; set; } // guardás la ruta, no el blob
+		public string? ImagenRuta { get; set; }
 
 		[NotMapped]
 		[Display(Name = "Subir imagen")]

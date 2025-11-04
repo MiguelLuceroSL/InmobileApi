@@ -7,18 +7,18 @@ using InmobileApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Conexión a la base de datos (usa tu DefaultConnection en appsettings.json)
+//conexión a la db (uso mi default connection del appsettings.json)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-// Add controllers
+//agregar controllers
 builder.Services.AddControllers();
 
-// JWT - key tomado de TokenAuthentication:SecretKey
+//jwt - key tomado de token authentication: secretkey
 var key = Encoding.ASCII.GetBytes(builder.Configuration["TokenAuthentication:SecretKey"]);
 
-// Configuración de autenticación JWT
+//config de autenticacion jwt
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -38,7 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// Swagger + configuración para usar JWT desde Swagger UI (botón Authorize)
+//swagger y config para usar jwt desde swagger ui (btn authorize) en la web de swagger
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -49,7 +49,7 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API de ejemplo para inmobiliaria"
     });
 
-    // Definición Security (Bearer)
+    //definicion security (Bearer)
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "Ingrese el token JWT así: Bearer {token}",
@@ -74,7 +74,7 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Middleware
+//middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

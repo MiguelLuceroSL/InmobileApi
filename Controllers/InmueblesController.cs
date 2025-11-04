@@ -23,7 +23,7 @@ public class InmueblesController : ControllerBase
     {
         try
         {
-            // 1️⃣ Deserializar el JSON recibido
+            //deserializar el json recibido
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
@@ -33,11 +33,11 @@ public class InmueblesController : ControllerBase
             if (nuevoInmueble == null)
                 return BadRequest("No se pudo deserializar el inmueble.");
 
-            // 2️⃣ Obtener id del propietario del token
+            //obtener id del propietario del token
             var idProp = int.Parse(User.Claims.First(c => c.Type == "id").Value);
             nuevoInmueble.PropietarioId = idProp;
 
-            // 3️⃣ Guardar imagen si existe
+            //guardar imagen si existe
             if (imagen != null)
             {
                 string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
@@ -53,7 +53,7 @@ public class InmueblesController : ControllerBase
                 nuevoInmueble.ImagenRuta = Path.Combine("uploads", nombreArchivo).Replace("\\", "/");
             }
 
-            // 4️⃣ Guardar en base de datos
+            //guardar en db
             _context.Inmuebles.Add(nuevoInmueble);
             await _context.SaveChangesAsync();
 

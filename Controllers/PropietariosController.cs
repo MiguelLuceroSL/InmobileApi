@@ -19,7 +19,7 @@ namespace InmobileApi.Controllers
             _context = context;
         }
 
-        // ✅ GET /api/Propietarios (perfil del propietario autenticado)
+        // /api/Propietarios (perfil del propietario autenticado)
         [HttpGet]
         public async Task<ActionResult<Propietario>> GetPerfil()
         {
@@ -39,19 +39,7 @@ namespace InmobileApi.Controllers
             }
         }
 
-        // ✅ GET /api/Propietarios/{id} (solo para probar o debug)
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Propietario>> GetById(int id)
-        {
-            var propietario = await _context.Propietarios.FindAsync(id);
-
-            if (propietario == null)
-                return NotFound("No se encontró el propietario");
-
-            return Ok(propietario);
-        }
-
-        // ✅ PUT /api/Propietarios/actualizar
+        // /api/Propietarios/actualizar
         [Authorize]
         [HttpPut("actualizar")]
         public async Task<ActionResult> Actualizar([FromBody] PropietarioUpdateDto datos)
@@ -80,7 +68,7 @@ namespace InmobileApi.Controllers
             }
         }
 
-        // ✅ PUT /api/Propietarios/cambiarClave
+        // /api/Propietarios/cambiarClave
         [HttpPut("cambiarClave")]
         public async Task<ActionResult> CambiarClave([FromForm] string claveActual, [FromForm] string nuevaClave)
         {
