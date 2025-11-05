@@ -19,9 +19,9 @@ namespace InmobileApi.Controllers
             _context = context;
         }
 
-        // /api/Propietarios (perfil del propietario autenticado)
+        // api/Propietarios (perfil del propietario autenticado)
         [HttpGet]
-        public async Task<ActionResult<Propietario>> GetPerfil()
+        public async Task<ActionResult<Propietario>> ObtenerPerfil()
         {
             try
             {
@@ -39,8 +39,7 @@ namespace InmobileApi.Controllers
             }
         }
 
-        // /api/Propietarios/actualizar
-        [Authorize]
+        // api/Propietarios/actualizar
         [HttpPut("actualizar")]
         public async Task<ActionResult> Actualizar([FromBody] PropietarioUpdateDto datos)
         {
@@ -68,7 +67,7 @@ namespace InmobileApi.Controllers
             }
         }
 
-        // /api/Propietarios/cambiarClave
+        // api/Propietarios/cambiarClave
         [HttpPut("cambiarClave")]
         public async Task<ActionResult> CambiarClave([FromForm] string claveActual, [FromForm] string nuevaClave)
         {

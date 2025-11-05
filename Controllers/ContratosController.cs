@@ -1,9 +1,7 @@
 using InmobileApi.Data;
-using InmobileApi.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 namespace InmobileApi.Controllers
 {
@@ -19,38 +17,42 @@ namespace InmobileApi.Controllers
             _context = context;
         }
 
-        // /api/Contratos/crear
-        [HttpPost("crear")]
-        public async Task<IActionResult> CrearContrato([FromBody] Contrato contrato)
+        // api/Contratos/inmueble/1
+        [HttpGet("inmueble/{id}")]
+        public async Task<IActionResult> ObtenerContratoPorInmueble(int id)
         {
             try
             {
+                //obtener id del propietario logueado
                 var idProp = int.Parse(User.Claims.First(c => c.Type == "id").Value);
 
-                var inmueble = await _context.Inmuebles 
-                    .FirstOrDefaultAsync(i => i.IdInmueble == contrato.InmuebleId && i.PropietarioId == idProp); //verificar que el inmueble pertenece al propietario logueado
+                //verificar que el inmueble pertenece al propietario
+                var inmueble = await _context.Inmuebles
+                    .FirstOrDefaultAsync(i => i.IdInmueble == id && i.PropietarioId == idProp);
 
                 if (inmueble == null)
                     return BadRequest("El inmueble no existe o no pertenece al propietario.");
 
-                
-                var inquilino = await _context.Inquilinos.FindAsync(contrato.InquilinoId); //verificar que el inquilino existe
-                if (inquilino == null)
-                    return BadRequest("El inquilino no existe.");
+                //obtener contrato vigente de ese inmueble
+                var contrato = await _context.Contratos
+                    .FirstOrDefaultAsync(c => c.InmuebleId == id && c.Vigente);
 
-                
-                if (contrato.FechaDesde >= contrato.FechaHasta) //validar fechas
-                    return BadRequest("La fecha de inicio debe ser anterior a la fecha de fin.");
+                if (contrato == null)
+                    return NotFound("No hay contrato vigente para este inmueble.");
 
-                
-                inmueble.TieneContratoVigente = true; //marcar inmueble con contrato vigente
+                //mapear a dto
+                var contratoDTO = new ContratoDTO
+                {
+                    IdContrato = contrato.IdContrato,
+                    InquilinoId = contrato.InquilinoId,
+                    InmuebleId = contrato.InmuebleId,
+                    FechaDesde = contrato.FechaDesde,
+                    FechaHasta = contrato.FechaHasta,
+                    CuotaMensual = contrato.CuotaMensual,
+                    Vigente = contrato.Vigente
+                };
 
-                contrato.Vigente = true; //se crea como vigente
-
-                await _context.Contratos.AddAsync(contrato);
-                await _context.SaveChangesAsync();
-
-                return CreatedAtAction(nameof(CrearContrato), new { contrato.IdContrato }, contrato);
+                return Ok(contratoDTO);
             }
             catch (Exception ex)
             {

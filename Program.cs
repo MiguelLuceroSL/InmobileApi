@@ -7,7 +7,7 @@ using InmobileApi.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//conexión a la db (uso mi default connection del appsettings.json)
+//conexion a la db (uso mi default connection del appsettings.json)
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));

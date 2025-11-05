@@ -1,16 +1,11 @@
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using InmobileApi.Data;
 using InmobileApi.Models;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace InmobileApi.Controllers
@@ -28,10 +23,10 @@ namespace InmobileApi.Controllers
             _config = config;
         }
 
-        // /api/Auth/signup
-        [HttpPost("signup")]
+        // api/Auth/registrar
+        [HttpPost("registrar")]
         [AllowAnonymous]
-        public async Task<IActionResult> Signup([FromForm] Propietario model)
+        public async Task<IActionResult> Registrar([FromForm] Propietario model)
         {
             try
             {
@@ -42,13 +37,13 @@ namespace InmobileApi.Controllers
                 if (existe)
                     return BadRequest("Ya existe un propietario con ese email");
 
-                //hash de la clave con BCrypt
+                //hash de la clave con bcrypt
                 model.Clave = BCrypt.Net.BCrypt.HashPassword(model.Clave);
 
                 await _context.Propietarios.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(Signup), new
+                return CreatedAtAction(nameof(Registrar), new
                 {
                     model.IdPropietario,
                     model.Nombre,
@@ -62,7 +57,7 @@ namespace InmobileApi.Controllers
             }
         }
 
-        // /api/Auth/login
+        // api/Auth/login
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromForm] LoginView loginView)
@@ -75,7 +70,7 @@ namespace InmobileApi.Controllers
                 if (propietario == null)
                     return BadRequest("Usuario o contraseña incorrectos");
 
-                //verificar con BCrypt
+                //verificar con bcrypt
                 bool passwordOk = BCrypt.Net.BCrypt.Verify(loginView.Clave, propietario.Clave);
 
                 if (!passwordOk)

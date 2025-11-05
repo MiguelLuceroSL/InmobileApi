@@ -19,42 +19,46 @@ public class InmueblesController : ControllerBase
         _environment = environment;
     }
 
+    // api/Inmuebles/cargar
     [HttpPost("cargar")]
-    public async Task<IActionResult> Cargar([FromForm] IFormFile imagen, [FromForm] string inmueble)
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Cargar([FromForm] InmuebleForm inmuebleForm)
     {
         try
         {
-            //deserializar el json recibido
+            //deserializar el json del inmueble (viene en inmuebleForm.Inmueble)
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
-            var nuevoInmueble = JsonSerializer.Deserialize<Inmueble>(inmueble, options);
 
+            var nuevoInmueble = JsonSerializer.Deserialize<Inmueble>(inmuebleForm.Inmueble, options);
             if (nuevoInmueble == null)
                 return BadRequest("No se pudo deserializar el inmueble.");
 
-            //obtener id del propietario del token
+            //bbtener id del propietario desde el token
             var idProp = int.Parse(User.Claims.First(c => c.Type == "id").Value);
             nuevoInmueble.PropietarioId = idProp;
 
-            //guardar imagen si existe
-            if (imagen != null)
+            //guardar img siesque existe
+            if (inmuebleForm.Imagen != null)
             {
-                string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
+                string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(inmuebleForm.Imagen.FileName);
                 string rutaCarpeta = Path.Combine(_environment.WebRootPath, "uploads");
+
                 if (!Directory.Exists(rutaCarpeta))
                     Directory.CreateDirectory(rutaCarpeta);
 
                 string rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
                 using (var stream = new FileStream(rutaCompleta, FileMode.Create))
                 {
-                    await imagen.CopyToAsync(stream);
+                    await inmuebleForm.Imagen.CopyToAsync(stream);
                 }
+
                 nuevoInmueble.ImagenRuta = Path.Combine("uploads", nombreArchivo).Replace("\\", "/");
             }
 
-            //guardar en db
+            //guardar en mi db
             _context.Inmuebles.Add(nuevoInmueble);
             await _context.SaveChangesAsync();
 
@@ -66,9 +70,9 @@ public class InmueblesController : ControllerBase
         }
     }
 
-    [Authorize]
+    // api/Inmuebles/misInmuebles
     [HttpGet("misInmuebles")]
-    public async Task<IActionResult> GetMisInmuebles()
+    public async Task<IActionResult> ObtenerMisInmuebles()
     {
         try
         {
@@ -104,7 +108,7 @@ public class InmueblesController : ControllerBase
         }
     }
 
-    [Authorize]
+    // api/Inmuebles/actualizar
     [HttpPut("actualizar")]
     public async Task<IActionResult> Actualizar([FromBody] Inmueble datos)
     {
@@ -139,9 +143,9 @@ public class InmueblesController : ControllerBase
         }
     }
 
-    [Authorize]
-    [HttpGet("GetInmueblesConContratoVigente")]
-    public async Task<IActionResult> GetInmueblesConContratoVigente()
+    // api/Inmuebles/obtenerInmueblesConContratoVigente
+    [HttpGet("obtenerInmueblesConContratoVigente")]
+    public async Task<IActionResult> ObtenerInmueblesConContratoVigente()
     {
         try
         {
@@ -162,10 +166,9 @@ public class InmueblesController : ControllerBase
         }
     }
 
-    // /api/Inmuebles/{id}
-    [Authorize]
+    // api/Inmuebles/3
     [HttpGet("{id}")]
-    public async Task<ActionResult<Inmueble>> GetInmueblePorId(int id)
+    public async Task<ActionResult<Inmueble>> ObtenerInmueblePorId(int id)
     {
         try
         {
