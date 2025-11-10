@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace InmobileApi.Models
 {
@@ -25,6 +26,7 @@ namespace InmobileApi.Models
 		public string Email { get; set; } = "";
 
 		[Required(ErrorMessage = "La clave es obligatoria"), DataType(DataType.Password)]
+		[JsonIgnore]
 		public string? Clave { get; set; } = "";
 
 		public List<Inmueble>? Inmuebles { get; set; }

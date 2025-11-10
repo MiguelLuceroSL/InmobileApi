@@ -26,46 +26,62 @@ public class InmueblesController : ControllerBase
     {
         try
         {
-            //deserializar el json del inmueble (viene en inmuebleForm.Inmueble)
+            //deserializo el json del inmueble (viene dentro del form)
             var options = new JsonSerializerOptions
             {
                 PropertyNameCaseInsensitive = true
             };
 
+            //si no se pudo leer el json, corto aca
             var nuevoInmueble = JsonSerializer.Deserialize<Inmueble>(inmuebleForm.Inmueble, options);
             if (nuevoInmueble == null)
                 return BadRequest("No se pudo deserializar el inmueble.");
 
-            //bbtener id del propietario desde el token
+            //saco el id del propietario del token
             var idProp = int.Parse(User.Claims.First(c => c.Type == "id").Value);
             nuevoInmueble.PropietarioId = idProp;
 
             //guardar img siesque existe
             if (inmuebleForm.Imagen != null)
             {
+                //le pongo un nombre random al archivo (para no pisar otros)
                 string nombreArchivo = Guid.NewGuid().ToString() + Path.GetExtension(inmuebleForm.Imagen.FileName);
                 string rutaCarpeta = Path.Combine(_environment.WebRootPath, "uploads");
 
+                //si no existe la carpeta, la creo
                 if (!Directory.Exists(rutaCarpeta))
                     Directory.CreateDirectory(rutaCarpeta);
 
+                //guardo la img en esa carpeta
                 string rutaCompleta = Path.Combine(rutaCarpeta, nombreArchivo);
                 using (var stream = new FileStream(rutaCompleta, FileMode.Create))
                 {
                     await inmuebleForm.Imagen.CopyToAsync(stream);
                 }
-
+                //guardo la ruta de la imagen en el objeto
                 nuevoInmueble.ImagenRuta = Path.Combine("uploads", nombreArchivo).Replace("\\", "/");
             }
 
-            //guardar en mi db
+            //lo guardo en la db
             _context.Inmuebles.Add(nuevoInmueble);
             await _context.SaveChangesAsync();
 
+            //busco el propietario y se lo asigno al inmueble
+            nuevoInmueble.Propietario = await _context.Propietarios
+                .FirstOrDefaultAsync(p => p.IdPropietario == idProp);
+
+            //la img ya se guardó, dejo esto null para no ensuciar el json
+            nuevoInmueble.ImagenFile = null;
+
+            if (nuevoInmueble.Propietario != null)
+                nuevoInmueble.Propietario.Inmuebles = new List<Inmueble>(); //evito ciclos en el json
+
+            //devuelvo ok con el inmueble nuevo
             return Ok(nuevoInmueble);
         }
         catch (Exception ex)
         {
+            //si algo rompe, devuelvo el error
             return BadRequest(ex.Message);
         }
     }
@@ -172,18 +188,23 @@ public class InmueblesController : ControllerBase
     {
         try
         {
+            //saco el id del propietario del token
             var idProp = int.Parse(User.Claims.First(c => c.Type == "id").Value);
 
+            //busco el inmueble que tenga ese id y que sea del propietario logueado
             var inmueble = await _context.Inmuebles
                 .FirstOrDefaultAsync(i => i.IdInmueble == id && i.PropietarioId == idProp);
 
+            //si no existe o no le pertenece, devuelvo notfound
             if (inmueble == null)
                 return NotFound("No se encontró el inmueble o no pertenece al propietario.");
 
+            //si llega hasta aca es porque lo encontró
             return Ok(inmueble);
         }
         catch (Exception ex)
         {
+            //si algo falla, mando el error
             return BadRequest(ex.Message);
         }
     }

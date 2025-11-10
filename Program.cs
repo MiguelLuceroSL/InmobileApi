@@ -13,7 +13,11 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 //agregar controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    //para evitar ciclos entre entidades relacionadas (por ejemplo Inmueble -> Propietario -> Inmuebles...)
+    x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+});
 
 //jwt - key tomado de token authentication: secretkey
 var key = Encoding.ASCII.GetBytes(builder.Configuration["TokenAuthentication:SecretKey"]);

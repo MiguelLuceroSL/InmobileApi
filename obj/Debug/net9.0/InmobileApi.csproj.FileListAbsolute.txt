@@ -1,11 +1,13 @@
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\appsettings.Development.json
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\appsettings.json
+C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\InmobileApi.staticwebassets.runtime.json
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\InmobileApi.staticwebassets.endpoints.json
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\InmobileApi.exe
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\InmobileApi.deps.json
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\InmobileApi.runtimeconfig.json
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\InmobileApi.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\InmobileApi.pdb
+C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\BCrypt.Net-Next.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Humanizer.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Microsoft.AspNetCore.OpenApi.dll
@@ -41,6 +43,9 @@ C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Microsoft
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Mono.TextTemplating.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\MySqlConnector.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Pomelo.EntityFrameworkCore.MySql.dll
+C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\System.CodeDom.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\System.Composition.AttributedModel.dll
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\System.Composition.Convention.dll
@@ -137,8 +142,3 @@ C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\obj\Debug\net9.0\refint\In
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\obj\Debug\net9.0\InmobileApi.pdb
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\obj\Debug\net9.0\InmobileApi.genruntimeconfig.cache
 C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\obj\Debug\net9.0\ref\InmobileApi.dll
-C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Swashbuckle.AspNetCore.Swagger.dll
-C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerGen.dll
-C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\Swashbuckle.AspNetCore.SwaggerUI.dll
-C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\BCrypt.Net-Next.dll
-C:\Users\thefl\OneDrive\Documentos\GitHub\InmobileApi\bin\Debug\net9.0\InmobileApi.staticwebassets.runtime.json

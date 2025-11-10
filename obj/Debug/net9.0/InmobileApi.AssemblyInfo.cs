@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("InmobileApi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e9c5d299aeea3c7764285d3cfc88f643fbbfc06d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+433eeb965da31e9b5affbd803fe4599ec19bca28")]
 [assembly: System.Reflection.AssemblyProductAttribute("InmobileApi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("InmobileApi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

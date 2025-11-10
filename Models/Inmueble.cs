@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace InmobileApi.Models
 {
@@ -35,6 +36,7 @@ namespace InmobileApi.Models
 
 		[NotMapped]
 		[Display(Name = "Subir imagen")]
+		[JsonIgnore]
 		public IFormFile? ImagenFile { get; set; }
 
 		public bool Disponible { get; set; } = true;
@@ -43,6 +45,7 @@ namespace InmobileApi.Models
 		public int PropietarioId { get; set; }
 
 		[ForeignKey(nameof(PropietarioId))]
+		[JsonIgnore]
 		public Propietario? Propietario { get; set; }
 
 		[Display(Name = "Tiene contrato vigente")]
